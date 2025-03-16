@@ -1,0 +1,35 @@
+﻿services:
+  auth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ConnectionStrings:DefaultConnection=Host=db;Port=5432;Database=auth;Username=postgres;Password=hammer44*;
+      - Jwt:Key=0pBrApgLFVf3jwJu4S20O82+VtnnaxA0roooicOjo8Y=.*
+
+    networks:
+      - auth-service
+    depends_on:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+    networks:
+      - auth-service
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=hammer44*
+      - POSTGRES_DB=auth
+
+networks:
+  auth-service:
+
+volumes:
+  postgresdata:
