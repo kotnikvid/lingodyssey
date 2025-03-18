@@ -30,14 +30,14 @@ jobs:
           nuget-${{ runner.os }}-
 
     - name: Restore dependencies
-      run: dotnet restore ./services/user
+      run: dotnet restore
       working-directory: ./services/user
 
     - name: Build the project
-      run: dotnet build ./services/user --configuration Release
+      run: dotnet build --configuration Release
       working-directory: ./services/user
 
     - name: Run tests
-      run: dotnet test ./services/user --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
       working-directory: ./services/user
 
