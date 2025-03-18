@@ -25,15 +25,19 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.nuget/packages
-        key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+        key: nuget-${{ runner.os }}-${{ hashFiles('./services/user/**/*.csproj') }}
         restore-keys: |
           nuget-${{ runner.os }}-
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./services/user
+      working-directory: ./services/user
 
     - name: Build the project
-      run: dotnet build --configuration Release
+      run: dotnet build ./services/user --configuration Release
+      working-directory: ./services/user
 
     - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test ./services/user --configuration Release --no-build --verbosity normal
+      working-directory: ./services/user
+
