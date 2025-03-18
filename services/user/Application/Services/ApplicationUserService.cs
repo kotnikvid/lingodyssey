@@ -8,7 +8,7 @@ using UserService.Infrastructure;
 
 namespace UserService.Application.Services;
 
-public class ApplicationUserService(IUserRepository userRepository, IMapper mapper) : IApplicationUserService
+public class ApplicationUserService(IUserRepository userRepository, IMapper mapper, ILogger<ApplicationUserService> logger) : IApplicationUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
@@ -45,6 +45,8 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
                 };
 
                 await userRepository.AddAsync(user);
+                
+                logger.LogInformation($"Created new user: {user}");
 
                 return new ResponseDto<object?>
                 {
@@ -55,10 +57,15 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
             }
             catch (Exception ex)
             {
+                var message = $"An error occurred while adding the user: {ex.Message}";
+                
+                logger.LogError(message);
+
+                
                 return new ResponseDto<object?>
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
-                    Message = $"An error occurred while adding the user: {ex.Message}",
+                    Message = message,
                     Data = null
                 };
             }
@@ -77,12 +84,15 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
             user.DisplayName = dto.DisplayName;
 
             await userRepository.UpdateAsync(user);
+            
+            logger.LogInformation($"Updated user {user.Email} to: {user}");
 
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.OK };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError($"Error updating user {dto.Email}");
+            
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.InternalServerError };
         }
     }
@@ -105,12 +115,14 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
             }
 
             await userRepository.UpdateAsync(user);
+            
+            logger.LogInformation($"User {user.Email}'s password has been updated.");
 
             return new ResponseDto<object?> { Data = user, StatusCode = HttpStatusCode.OK };
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            logger.LogError($"Error updating user password {dto.Email}");
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.InternalServerError };
         }
     }
@@ -124,11 +136,15 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
             if (user is null) return new ResponseDto<object?> { StatusCode = HttpStatusCode.NotFound };
 
             await userRepository.DeleteAsync(userId);
+            
+            logger.LogInformation($"User {userId} has been deleted.");
 
             return new ResponseDto<object?>();
         }
         catch (Exception e)
         {
+            logger.LogInformation($"Error deleting user {userId}");
+            
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.InternalServerError };
         }
     }

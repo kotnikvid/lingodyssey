@@ -8,11 +8,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using UserService.Application.Services;
 using UserService.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
 builder.Services.AddCors(options =>
 {
@@ -69,6 +72,14 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireRole("Teacher", "Admin")
     );
 
+//logger config
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log_.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
 app.UseCors("AllowReactApp");
@@ -101,7 +112,7 @@ app.MapPost("/login",
         async (UserLoginDto dto, ITokenService tokenService) =>
         {
             var res = await tokenService.Login(dto);
-            
+
             return res.IsSuccessStatusCode ? Results.Ok(res) : Results.Unauthorized();
         })
     .WithName("Login")
@@ -117,7 +128,7 @@ app.MapPost("/register",
         async (UserLoginDto dto, ITokenService tokenService) =>
         {
             var res = await tokenService.Register(dto);
-            
+
             return res.IsSuccessStatusCode ? Results.Ok(res) : Results.Problem();
         })
     .WithName("Register")
@@ -158,7 +169,8 @@ app.MapGet("/users/{email}",
         {
             var userEmail = Helpers.GetEmailFromToken(ctx);
 
-            if (!email.Equals(userEmail, StringComparison.CurrentCultureIgnoreCase) && !ctx.User.IsInRole("Admin"))
+            if (!email.Equals(userEmail, StringComparison.CurrentCultureIgnoreCase) &&
+                !ctx.User.IsInRole("Admin"))
                 return Results.Unauthorized();
 
             var user = await userService.GetUserByEmail(email);
@@ -193,7 +205,9 @@ app.MapPut("/users/password",
 
             dto.Email = userEmail;
 
-            return (await userService.ChangePassword(dto)).IsSuccessStatusCode ? Results.Ok() : Results.BadRequest();
+            return (await userService.ChangePassword(dto)).IsSuccessStatusCode
+                ? Results.Ok()
+                : Results.BadRequest();
         })
     .WithName("Change Password")
     .WithDescription("Change user password.");
@@ -203,7 +217,7 @@ app.MapDelete("/users/{id}",
         async (IApplicationUserService userService, string id) =>
         {
             var guid = Guid.Parse(id);
-            
+
             return (await userService.DeleteUser(guid)).IsSuccessStatusCode
                 ? Results.Ok()
                 : Results.BadRequest();
@@ -214,3 +228,5 @@ app.MapDelete("/users/{id}",
 #endregion
 
 app.Run();
+
+public partial class Program { }
