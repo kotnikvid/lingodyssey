@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package si.um.kotnik;
+
+service CardService {
+  // CardSet endpoints
+  rpc AddCardSet (CardSetDtoMessage) returns (ResponseDtoGrpc);
+  rpc GetCardSetById (CardSetIdRequest) returns (ResponseDtoGrpc);
+  rpc GetCardSets (EmptyRequest) returns (ResponseDtoGrpc);
+  rpc GetCardSetsByLanguage (LanguageRequest) returns (ResponseDtoGrpc);
+  rpc GetCardSetsByUser (UserEmailRequest) returns (ResponseDtoGrpc);
+  rpc UpdateCardSet (CardSetDtoMessage) returns (ResponseDtoGrpc);
+  rpc DeleteCardSet (CardSetIdRequest) returns (ResponseDtoGrpc);
+
+  // FlashCard endpoints
+  rpc AddFlashCard (FlashCardDtoMessage) returns (ResponseDtoGrpc);
+  rpc GetFlashCardById (FlashCardIdRequest) returns (ResponseDtoGrpc);
+  rpc UpdateFlashCard (FlashCardDtoMessage) returns (ResponseDtoGrpc);
+  rpc DeleteFlashCard (FlashCardIdRequest) returns (ResponseDtoGrpc);
+
+  // Attempt endpoints
+  rpc AddAttempt (AttemptDtoMessage) returns (ResponseDtoGrpc);
+}
+
+message CardSetDtoMessage {
+  string id = 1;
+  string name = 2;
+  string userEmail = 3;
+  string languageName = 4;
+  string languageCode = 5;
+  repeated FlashCardDtoMessage flashCards = 6;
+}
+
+message CardSetListMessage {
+  repeated CardSetDtoMessage cardSets = 1;
+}
+
+message FlashCardDtoMessage {
+  string id = 1;
+  string cardSetId = 2;
+  string title = 3;
+  string body = 4;
+  string correctAnswer = 5;
+  int32 pointsAwarded = 6;
+  repeated string otherAnswers = 7;
+}
+
+message AttemptDtoMessage {
+  string userEmail = 1;
+  string startedAt = 2; // ISO 8601 format datetime
+  string endedAt = 3; // ISO 8601 format datetime
+  bool hasPassed = 4;
+  string cardSetId = 5;
+}
+
+message ResponseDtoGrpc {
+  string message = 1;
+  oneof data {
+    CardSetDtoMessage cardSet = 2;
+    FlashCardDtoMessage flashCard = 3;
+    AttemptDtoMessage attempt = 4;
+    CardSetListMessage cardSets = 5;
+    string msg = 6;
+  }
+  int32 statusCode = 7;
+}
+
+message CardSetIdRequest {
+  string id = 1;
+}
+
+message FlashCardIdRequest {
+  string id = 1;
+}
+
+message CardSetRequest {
+  CardSetDtoMessage cardSet = 1;
+}
+
+message UserEmailRequest {
+  string email = 1;
+}
+
+message LanguageRequest {
+  string languageName = 1;
+  string languageCode = 2;
+}
+
+message EmptyRequest {}
