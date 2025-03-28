@@ -1,6 +1,7 @@
 package si.um.kotnik.application.services
 
 import io.quarkus.mongodb.panache.PanacheQuery
+import io.quarkus.test.junit.QuarkusTest
 import org.junit.jupiter.api.Test
 import jakarta.ws.rs.core.Response
 import org.bson.types.ObjectId
@@ -15,6 +16,7 @@ import si.um.kotnik.domain.entities.*
 import si.um.kotnik.repository.*
 import java.time.LocalDateTime
 
+@QuarkusTest
 class CardServiceTest {
     @InjectMocks
     lateinit var cardService: CardService

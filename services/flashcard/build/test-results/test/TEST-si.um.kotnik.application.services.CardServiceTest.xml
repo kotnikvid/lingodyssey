@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="si.um.kotnik.application.services.CardServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-03-28T11:43:53" hostname="DESKTOP-2VMKS8G" time="2.858">
+  <properties/>
+  <testcase name="test deleteCardSet should delete card set and return NO_CONTENT()" classname="si.um.kotnik.application.services.CardServiceTest" time="2.388"/>
+  <testcase name="test addAttempt should persist attempt and return CREATED()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.032"/>
+  <testcase name="test userHasFlashcardAccess should return true when user has access()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.022"/>
+  <testcase name="test getCardSets should return a list of card sets()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.242"/>
+  <testcase name="test userHasCardSetAccess should return true when user has access()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.01"/>
+  <testcase name="test updateCardSet should update card set and return OK()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.008"/>
+  <testcase name="test addFlashcardToSet should add flashcard and return OK()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.115"/>
+  <testcase name="test addCardSet should persist card set and return OK()" classname="si.um.kotnik.application.services.CardServiceTest" time="0.006"/>
+  <system-out><![CDATA[2025-03-28 12:43:49,785 WARN  [io.qua.res.mut.dep.ResteasyMutinyProcessor] (build-36) The quarkus-resteasy-mutiny extension is deprecated. Switch to RESTEasy Reactive instead.
+This extension adds support for Uni and Multi to RESTEasy Classic, without using the reactive execution model, as RESTEasy Classic does not use it. To properly integrate Mutiny and RESTEasy, use RESTEasy Reactive. See https://quarkus.io/guides/getting-started-reactive for detailed instructions
+2025-03-28 12:43:51,916 WARN  [io.qua.config] (Test worker) Unrecognized configuration key "quarkus.mongodb.codec-providers" was provided; it will be ignored; verify that the dependency extension for this configuration is set or that you did not make a typo
+2025-03-28 12:43:53,262 WARN  [io.qua.grp.run.GrpcServerRecorder] (Test worker) Using legacy gRPC support, with separate new HTTP server instance. Switch to single HTTP server instance usage with quarkus.grpc.server.use-separate-server=false property
+2025-03-28 12:43:53,688 INFO  [io.qua.grp.run.GrpcServerRecorder] (vert.x-eventloop-thread-1) Started gRPC server on 0.0.0.0:9001 [TLS enabled: false]
+2025-03-28 12:43:53,761 INFO  [io.quarkus] (Test worker) flashcardService 1.0-SNAPSHOT on JVM (powered by Quarkus 3.6.4) started in 5.472s. Listening on: http://localhost:8081
+2025-03-28 12:43:53,762 INFO  [io.quarkus] (Test worker) Profile test activated. 
+2025-03-28 12:43:53,762 INFO  [io.quarkus] (Test worker) Installed features: [cdi, grpc-server, kotlin, mongodb-client, mongodb-panache, narayana-jta, resteasy, resteasy-jackson, resteasy-mutiny, smallrye-context-propagation, vertx]
+]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\Vid\.gradle\caches\modules-2\files-2.1\net.bytebuddy\byte-buddy-agent\1.14.4\3bf5ac1104554908cc623e40e58a00be37c35f36\byte-buddy-agent-1.14.4.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

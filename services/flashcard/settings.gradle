@@ -8,4 +8,4 @@ pluginManagement {
         id("io.quarkus") version "3.6.4"
     }
 }
-rootProject.name = 'userService'
+rootProject.name = 'flashcardService'

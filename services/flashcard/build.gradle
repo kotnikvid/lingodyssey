@@ -36,9 +36,6 @@ java {
     }
 }
 
-test {
-    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
-}
 allOpen {
     annotation("jakarta.ws.rs.Path")
     annotation("jakarta.enterprise.context.ApplicationScoped")
@@ -59,3 +56,4 @@ noArg {
     annotation("si.um.kotnik.domain.entities")
     invokeInitializers = true  // Important for proper initialization
 }
+
