@@ -1,0 +1,377 @@
+﻿{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Gamification API",
+    "version": "1.0.0",
+    "description": "API for managing gamification related features"
+  },
+  "paths": {
+    "/awards/{id}": {
+      "get": {
+        "summary": "Get an award by ID",
+        "operationId": "getAwardById",
+        "tags": [
+          "Awards"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the award to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Award found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwardResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Award not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an award",
+        "operationId": "updateAward",
+        "tags": [
+          "Awards"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the award to update",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AwardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Award updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwardDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Award not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an award",
+        "operationId": "deleteAward",
+        "tags": [
+          "Awards"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the award to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Award deleted"
+          },
+          "404": {
+            "description": "Award not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/awards": {
+      "post": {
+        "summary": "Create a new award",
+        "operationId": "createAward",
+        "tags": [
+          "Awards"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AwardDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Award created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AwardDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/streaks/{id}": {
+      "get": {
+        "summary": "Get a streak by ID",
+        "operationId": "getStreakById",
+        "tags": [
+          "Streaks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the streak to retrieve",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Streak found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreakDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Streak not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a streak",
+        "operationId": "updateStreak",
+        "tags": [
+          "Streaks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the streak to update",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StreakDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Streak updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreakDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Streak not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a streak",
+        "operationId": "deleteStreak",
+        "tags": [
+          "Streaks"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the streak to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Streak deleted"
+          },
+          "404": {
+            "description": "Streak not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/streaks": {
+      "post": {
+        "summary": "Create or update a streak",
+        "operationId": "createOrUpdateStreak",
+        "tags": [
+          "Streaks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StreakDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Streak created or updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreakDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AwardDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Gold Medal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Awarded for achieving excellence in the competition."
+          },
+          "pointsNeeded": {
+            "type": "integer",
+            "example": 100
+          },
+          "createdBy": {
+            "type": "string",
+            "example": "admin@example.com"
+          }
+        }
+      },
+      "AwardResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Gold Medal"
+          },
+          "description": {
+            "type": "string",
+            "example": "Awarded for achieving excellence in the competition."
+          },
+          "pointsNeeded": {
+            "type": "integer",
+            "example": 100
+          }
+        }
+      },
+      "StreakDto": {
+        "type": "object",
+        "properties": {
+          "userEmail": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY"
+            ]
+          },
+          "restartedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-01-20T12:34:56Z"
+          },
+          "isFailed": {
+            "type": "boolean",
+            "example": false
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-01-20T12:34:56Z"
+          }
+        }
+      }
+    }
+  }
+}
