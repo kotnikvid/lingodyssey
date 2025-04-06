@@ -31,10 +31,13 @@ jobs:
             ${{ runner.os }}-node-modules-
 
       - name: Install dependencies
+        working-directory: services/gamification
         run: npm install
 
       - name: Build the TypeScript code
+        working-directory: services/gamification
         run: npx tsc
 
       - name: Run tests
+        working-directory: services/gamification
         run: npx jest
