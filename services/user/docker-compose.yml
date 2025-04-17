@@ -4,7 +4,7 @@
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8082:8080"
     environment:
       - ConnectionStrings:DefaultConnection=Host=db;Port=5432;Database=auth;Username=postgres;Password=hammer44*;
       - Jwt:Key=0pBrApgLFVf3jwJu4S20O82+VtnnaxA0roooicOjo8Y=.*

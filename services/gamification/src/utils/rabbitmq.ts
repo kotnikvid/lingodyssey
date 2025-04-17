@@ -5,15 +5,32 @@ import { Observable, from } from 'rxjs';
 let amqpConnection: amqp.Connection | null = null;
 let amqpChannel: amqp.Channel | null = null;
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 export async function initRabbitMQ() {
-    try {
-        amqpConnection = await amqp.connect('amqp://localhost');
-        amqpChannel = await amqpConnection.createChannel();
-        console.log('RabbitMQ connected and channel created.');
-    } catch (error) {
-        console.error('Error initializing RabbitMQ:', error);
-        throw error;
+    let retries = 5;
+
+    while (retries > 0) {
+        try {
+            const host = process.env.RABBITMQ_HOST || 'localhost';
+
+            amqpConnection = await amqp.connect('amqp://' + host);
+            amqpChannel = await amqpConnection.createChannel();
+            console.log('RabbitMQ connected and channel created.');
+
+            await amqpChannel.assertQueue('awardUserQueue', {
+                durable: true,
+            });
+
+            return;
+        } catch (error) {
+            console.error('Error initializing RabbitMQ:', error);
+            retries--;
+            await sleep(3000);
+        }
     }
+
+    throw new Error('Failed to connect to RabbitMQ');
 }
 
 export function sendMessageToQueue(queue: string, message: string): Observable<void> {

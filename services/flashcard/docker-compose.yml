@@ -1,38 +1,35 @@
 ﻿services:
-#  gamification:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8085:8085"
-#    environment:
-#      - NODE_ENV=production
-#      - JWT_SECRET=0pBrApgLFVf3jwJu4S20O82+VtnnaxA0roooicOjo8Y=.*
-#      - MONGO_INITDB_ROOT_USERNAME=root
-#      - MONGO_INITDB_ROOT_PASSWORD=hammer44*
-#      - MONGO_URL=mongodb://root:hammer44*@db:27017
-#      - DB_NAME=lingodyssey
-#    networks:
-#      - gamification-service
-#    depends_on:
-#      - db
+  flashcard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+      - "9000:9000"
+    environment:
+      - JWT_SECRET=0pBrApgLFVf3jwJu4S20O82+VtnnaxA0roooicOjo8Y=.*
+      - DB_URL=mongodb://root:hammer44*@db:27017/lingodyssey?authSource=admin
+    networks:
+      - flashcard-service
+    depends_on:
+      - db
   db:
     build:
       context: .
       dockerfile: Dockerfile-db
     ports:
-      - "27018:27017"
+      - "27019:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=hammer44*
 
     networks:
-      - gamification-service
+      - flashcard-service
     volumes:
       - mongodata:/data/db
 
 networks:
-  gamification-service:
+  flashcard-service:
     
 volumes:
   mongodata:

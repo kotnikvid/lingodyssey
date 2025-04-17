@@ -1,6 +1,8 @@
 import express from "express";
 import { authenticateJWT } from "../middleware/authMiddleware";
 import { StreakService, StreakDto } from "../services/streakService";
+import { of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 
 const router = express.Router();
 
@@ -79,6 +81,29 @@ router.delete("/:id", authenticateJWT(["Admin"]), (req: express.Request<{ id: st
             res.status(500).send("Internal server error");
         },
     });
+});
+
+//Get Awards by user
+router.get('/user/:userEmail', authenticateJWT(['Admin', 'User']), (req, res) => {
+    const user = req.params.userEmail;
+
+    if (!user) {
+        res.status(400).send('User must be provided');
+        return;
+    }
+
+    StreakService.getStreaksByUser(user).pipe(
+        switchMap((result) => {
+            if (!result) {
+                return of(res.status(404).send('Streak not found'));
+            }
+            return of(res.status(200).json(result));
+        }),
+        catchError((error) => {
+            console.error(error);
+            return of(res.status(500).send('Internal server error'));
+        })
+    ).subscribe();
 });
 
 export default router;

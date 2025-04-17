@@ -12,10 +12,12 @@
       - MONGO_INITDB_ROOT_PASSWORD=hammer44*
       - MONGO_URL=mongodb://root:hammer44*@db:27017
       - DB_NAME=lingodyssey
+      - RABBITMQ_HOST=kotnikvid:hammer44*@mq:5672
     networks:
       - gamification-service
     depends_on:
       - db        
+      - mq
   db:
     build:
       context: .

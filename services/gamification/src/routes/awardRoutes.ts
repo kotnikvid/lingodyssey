@@ -126,4 +126,27 @@ router.post('/awardUser', authenticateJWT(['Admin', 'User']), (req: express.Requ
     });
 });
 
+//Get Awards by user
+router.get('/userAwards/:userEmail', authenticateJWT(['Admin', 'User']), (req, res) => {
+    const user = req.params.userEmail;
+
+    if (!user) {
+        res.status(400).send('User must be provided');
+        return;
+    }
+
+    AwardService.getAwardsByUserEmail(user).pipe(
+        switchMap((result) => {
+            if (!result) {
+                return of(res.status(404).send('Award not found'));
+            }
+            return of(res.status(200).json(result));
+        }),
+        catchError((error) => {
+            console.error(error);
+            return of(res.status(500).send('Internal server error'));
+        })
+    ).subscribe();
+});
+
 export default router;
