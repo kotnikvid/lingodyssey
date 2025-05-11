@@ -15,6 +15,7 @@ services:
       - MONGO_URL=mongodb://root:hammer44*@db:27017
       - DB_NAME=lingodyssey
       - RABBITMQ_HOST=kotnikvid:hammer44*@mq:5672
+      - LOG_PATH=/var/log/gamification/gamificationLogs.log
     networks:
       - gamification-service
     volumes:

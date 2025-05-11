@@ -9,7 +9,7 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: "/var/log/gamification/gamificationLogs.log" }),
+    new winston.transports.File({ filename: process.env.LOG_PATH || "logs/app.log" }),
   ],
 });
 
