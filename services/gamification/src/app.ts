@@ -9,6 +9,7 @@ import { startConsumer } from "./utils/consumer";
 
 import awardRoutes from "./routes/awardRoutes";
 import streakRoutes from "./routes/streakRoutes";
+import logger from "./utils/logger";
 
 const app = express();
 const port = process.env.PORT || 8085;
@@ -34,10 +35,13 @@ const connectToMongo = () => {
 const { initRabbitMQ } = require("./utils/rabbitmq");
 
 const initializeApp = () => {
+   logger.info("Initializing app...");
+
    return connectToMongo().pipe(
       switchMap((dbConnection) => {
          if (dbConnection) {
             console.log('Connected to MongoDB');
+            logger.info('Connected to MongoDB');
             return initRabbitMQ();
          }
          return of(null); // Skip RabbitMQ connection if DB connection fails
@@ -45,6 +49,7 @@ const initializeApp = () => {
       switchMap((rabbitMQChannel) => {
          if (rabbitMQChannel) {
             console.log('RabbitMQ channel is ready');
+            logger.info('RabbitMQ channel is ready');
          }
          return of(null); // Proceed after both DB and RabbitMQ connections are ready
       }),
@@ -60,10 +65,11 @@ initializeApp().subscribe({
    next: () => {
       startConsumer(); // Start the RabbitMQ consumer
       console.log("RabbitMQ consumer started");
+      logger.info("RabbitMQ consumer started");
 
       app.listen(port, () => {
          console.log(`Server is running on port ${port}`);
-
+         logger.info(`Server is running on port ${port}`);
       });
    },
    error: (err) => {

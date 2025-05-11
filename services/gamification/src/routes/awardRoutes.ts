@@ -3,6 +3,7 @@ import { authenticateJWT } from '../middleware/authMiddleware';
 import { AwardService } from '../services/awardService';
 import { of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
+import logger from "../utils/logger";
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.get('/:id', authenticateJWT(['User', 'Admin']), (req, res) => {
             return of(res.json(responseDto));
         }),
         catchError((error) => {
-            console.error(error);
+            logger.error(error);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();
@@ -63,7 +64,7 @@ router.post('/', authenticateJWT(['Admin']), (req, res) => {
     AwardService.createAward(dto).pipe(
         switchMap((award) => of(res.json(award))),
         catchError((error) => {
-            console.error(error);
+            logger.error(error);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();
@@ -82,7 +83,7 @@ router.put('/:id', authenticateJWT(['Admin']), (req, res) => {
             return of(res.json(updatedAward));
         }),
         catchError((error) => {
-            console.error(error);
+            logger.error(error);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();
@@ -100,7 +101,7 @@ router.delete('/:id', authenticateJWT(['Admin']), (req, res) => {
             return of(res.status(204).send('Deleted'));
         }),
         catchError((error) => {
-            console.error(error);
+            logger.error(error);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();
@@ -120,7 +121,7 @@ router.post('/awardUser', authenticateJWT(['Admin', 'User']), (req: express.Requ
             res.status(200).send('Message sent to RabbitMQ successfully');
         },
         error: (err: Error) => {
-            console.error(err);
+            logger.error(err);
             res.status(500).send('Error sending message to RabbitMQ - ');
         },
     });
@@ -143,7 +144,7 @@ router.get('/userAwards/:userEmail', authenticateJWT(['Admin', 'User']), (req, r
             return of(res.status(200).json(result));
         }),
         catchError((error) => {
-            console.error(error);
+            logger.error(error);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();

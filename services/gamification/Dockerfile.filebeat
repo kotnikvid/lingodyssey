@@ -1,0 +1,8 @@
+FROM docker.elastic.co/beats/filebeat:7.13.2
+
+# Copy the filebeat.yml config file into the container
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+
+# Make sure the permissions are correct (only root can write)
+USER root
+RUN chmod 644 /usr/share/filebeat/filebeat.yml

@@ -1,0 +1,14 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/gamification/*.log
+
+    json.keys_under_root: true
+    json.add_error_key: true
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]  # Send logs to Elasticsearch
+
+setup.kibana:
+  host: "kibana:5601"  # Kibana for visualizing logs

@@ -3,6 +3,7 @@ import { authenticateJWT } from "../middleware/authMiddleware";
 import { StreakService, StreakDto } from "../services/streakService";
 import { of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
+import logger from "../utils/logger";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.get("/:id", authenticateJWT(["User", "Admin"]), (req: express.Request, re
             }
         },
         error: (err) => {
-            console.error(err);
+            logger.error(err);
             res.status(500).send("Internal server error");
         },
     });
@@ -38,7 +39,7 @@ router.post("/", authenticateJWT(["User", "Admin"]), (req: express.Request<{}, {
             }
         },
         error: (err) => {
-            console.error(err);
+            logger.error(err);
             res.status(500).send("Internal server error");
         },
     });
@@ -58,7 +59,7 @@ router.put("/:id", authenticateJWT(["User", "Admin"]), (req: express.Request<{ i
             }
         },
         error: (err) => {
-            console.error(err);
+            logger.error(err);
             res.status(500).send("Internal server error");
         },
     });
@@ -77,7 +78,7 @@ router.delete("/:id", authenticateJWT(["Admin"]), (req: express.Request<{ id: st
             }
         },
         error: (err) => {
-            console.error(err);
+            logger.error(err);
             res.status(500).send("Internal server error");
         },
     });
@@ -99,8 +100,8 @@ router.get('/user/:userEmail', authenticateJWT(['Admin', 'User']), (req, res) =>
             }
             return of(res.status(200).json(result));
         }),
-        catchError((error) => {
-            console.error(error);
+        catchError((err) => {
+            logger.error(err);
             return of(res.status(500).send('Internal server error'));
         })
     ).subscribe();
