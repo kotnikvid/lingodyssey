@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using UserService.Application.Dtos;
+using UserService.Application.Tokens.Login;
 using UserService.Domain.Entities;
+using UserDto = UserService.Application.ApplicationUser.Queries.GetUsers.UserDto;
 
 namespace UserService.Infrastructure;
 

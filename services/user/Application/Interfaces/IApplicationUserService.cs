@@ -1,5 +1,6 @@
 ﻿using UserService.Application.Dtos;
-using UserService.Domain.Entities;
+using UserService.Application.Tokens.Login;
+using UserDto = UserService.Application.ApplicationUser.Queries.GetUsers.UserDto;
 
 namespace UserService.Domain.Interfaces;
 

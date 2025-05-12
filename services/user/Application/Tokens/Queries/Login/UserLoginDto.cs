@@ -1,4 +1,4 @@
-﻿namespace UserService.Application.Dtos;
+﻿namespace UserService.Application.Tokens.Login;
 
 public class UserLoginDto
 {

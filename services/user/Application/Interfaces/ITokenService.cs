@@ -1,5 +1,6 @@
-﻿using UserService.Application.Dtos;
-using UserService.Domain.Entities;
+﻿using UserService.Application.Tokens.Login;
+using UserService.Application.Dtos;
+using UserService.Application.Tokens.Commands.GenerateTokenPair;
 
 namespace UserService.Domain.Interfaces;
 

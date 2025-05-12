@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using UserService.Application.Common;
 using UserService.Application.Dtos;
@@ -11,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Swashbuckle.AspNetCore.Annotations;
 using UserService.Application.Services;
+using UserService.Application.Tokens.Login;
 using UserService.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +36,7 @@ builder.Services.AddAutoMapper(cfg => { cfg.AddProfile<MappingsProfile>(); }
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddDbContext<ApplicationDbContext>(db =>
     db.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

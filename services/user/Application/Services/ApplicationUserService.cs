@@ -1,98 +1,96 @@
 ﻿using System.Net;
 using UserService.Application.Dtos;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
+using UserService.Application.ApplicationUser.Commands.AddUser;
+using UserService.Application.ApplicationUser.Commands.UpdateUser;
+using UserService.Application.ApplicationUser.Queries.GetUserByEmail;
+using UserService.Application.ApplicationUser.Queries.GetUsers;
+using UserService.Application.ApplicationUsers.Commands.ChangePassword;
+using UserService.Application.ApplicationUsers.Commands.DeleteUser;
+using UserService.Application.Tokens.Login;
 using UserService.Domain.Entities;
 using UserService.Domain.Interfaces;
-using UserService.Infrastructure;
+using UserDto = UserService.Application.ApplicationUser.Queries.GetUsers.UserDto;
 
 namespace UserService.Application.Services;
 
-public class ApplicationUserService(IUserRepository userRepository, IMapper mapper, ILogger<ApplicationUserService> logger) : IApplicationUserService
+public class ApplicationUserService(
+    IUserRepository userRepository,
+    IMapper mapper,
+    ILogger<ApplicationUserService> logger,
+    IMediator mediator) : IApplicationUserService
 {
     public async Task<List<UserDto>> GetUsers()
     {
-        var users = await userRepository.GetAllAsync();
-        
-        return mapper.Map<List<UserDto>>(users);
+        var users = await mediator.Send(new GetUsersQuery());
+
+        return users;
     }
+
     public async Task<UserDto?> GetUserByEmail(string email)
     {
-        var user = await userRepository.GetByEmailAsync(email);
-        
-        return mapper.Map<UserDto>(user);
+        var user = await mediator.Send(new GetUserByEmailQuery { Email = email });
+
+        return user;
     }
 
     public async Task<ResponseDto<object?>> AddUser(UserLoginDto userDto)
     {
-            try
+        try
+        {
+            var existingUser = await mediator.Send(new GetUserByEmailQuery { Email = userDto.Email });
+            if (existingUser != null)
             {
-                var existingUser = await userRepository.GetByEmailAsync(userDto.Email);
-                if (existingUser != null)
-                {
-                    return new ResponseDto<object?>
-                    {
-                        StatusCode = HttpStatusCode.OK,
-                        Message = "A user with this email already exists.",
-                        Data = null
-                    };
-                }
-
-                var user = new User
-                {
-                    Email = userDto.Email,
-                    Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password)
-                };
-
-                await userRepository.AddAsync(user);
-                
-                logger.LogInformation($"Created new user: {user}");
-
                 return new ResponseDto<object?>
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Message = "User added successfully.",
+                    Message = "A user with this email already exists.",
                     Data = null
                 };
             }
-            catch (Exception ex)
-            {
-                var message = $"An error occurred while adding the user: {ex.Message}";
-                
-                logger.LogError(message);
 
-                
-                return new ResponseDto<object?>
-                {
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    Message = message,
-                    Data = null
-                };
-            }
+            await mediator.Send(new AddUserCommand
+                { Email = userDto.Email, Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password) });
+
+            return new ResponseDto<object?>
+            {
+                StatusCode = HttpStatusCode.OK,
+                Message = "User added successfully.",
+                Data = null
+            };
+        }
+        catch (Exception ex)
+        {
+            var message = $"An error occurred while adding the user: {ex.Message}";
+
+            logger.LogError(message);
+
+            return new ResponseDto<object?>
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Message = message,
+                Data = null
+            };
+        }
     }
 
     public async Task<ResponseDto<object?>> UpdateUser(UserLoginDto dto)
     {
         try
         {
-            var user = await userRepository.GetByEmailAsync(dto.Email.ToLower());
+            var user = await mediator.Send(new GetUserByEmailQuery { Email = dto.Email });
 
             if (user is null) return new ResponseDto<object?> { StatusCode = HttpStatusCode.BadRequest };
 
-            user.FullName = dto.FullName;
-            user.BirthDate = dto.BirthDate;
-            user.DisplayName = dto.DisplayName;
-
-            await userRepository.UpdateAsync(user);
-            
-            logger.LogInformation($"Updated user {user.Email} to: {user}");
+            await mediator.Send(new UpdateUserCommand { Dto = dto });
 
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.OK };
         }
         catch (Exception e)
         {
             logger.LogError($"Error updating user {dto.Email}");
-            
+
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.InternalServerError };
         }
     }
@@ -101,24 +99,11 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
     {
         try
         {
-            var user = await userRepository.GetByEmailAsync(dto.Email.ToLower());
-
-            if (user is null) return new ResponseDto<object?> { StatusCode = HttpStatusCode.BadRequest };
-
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
-            user.Password = hashedPassword;
-
-            foreach (var token in user.RefreshTokens)
-            {
-                token.IsInvalidated = true;
-            }
-
-            await userRepository.UpdateAsync(user);
             
-            logger.LogInformation($"User {user.Email}'s password has been updated.");
+            var res = await mediator.Send(new ChangePasswordCommand { Email = dto.Email, Password = hashedPassword });
 
-            return new ResponseDto<object?> { Data = user, StatusCode = HttpStatusCode.OK };
+            return new ResponseDto<object?> { Data = res, StatusCode = HttpStatusCode.OK };
         }
         catch (Exception e)
         {
@@ -131,20 +116,14 @@ public class ApplicationUserService(IUserRepository userRepository, IMapper mapp
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(userId);
+            var res = await mediator.Send(new DeleteUserCommand { UserId = userId });
 
-            if (user is null) return new ResponseDto<object?> { StatusCode = HttpStatusCode.NotFound };
-
-            await userRepository.DeleteAsync(userId);
-            
-            logger.LogInformation($"User {userId} has been deleted.");
-
-            return new ResponseDto<object?>();
+            return new ResponseDto<object?> { Data = res, StatusCode = res ? HttpStatusCode.OK : HttpStatusCode.InternalServerError };
         }
         catch (Exception e)
         {
             logger.LogInformation($"Error deleting user {userId}");
-            
+
             return new ResponseDto<object?> { StatusCode = HttpStatusCode.InternalServerError };
         }
     }

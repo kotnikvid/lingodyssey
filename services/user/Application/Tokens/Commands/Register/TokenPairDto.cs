@@ -1,4 +1,4 @@
-﻿namespace UserService.Application.Dtos;
+﻿namespace UserService.Application.Tokens.Commands.GenerateTokenPair;
 
 public class TokenPairDto
 {

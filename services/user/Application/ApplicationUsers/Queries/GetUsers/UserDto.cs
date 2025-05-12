@@ -1,4 +1,4 @@
-﻿namespace UserService.Application.Dtos;
+﻿namespace UserService.Application.ApplicationUser.Queries.GetUsers;
 
 public class UserDto
 {

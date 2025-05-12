@@ -2,6 +2,8 @@
 using Xunit;
 using Microsoft.AspNetCore.Http.HttpResults;
 using UserService.Application.Dtos;
+using UserService.Application.Tokens.Commands.GenerateTokenPair;
+using UserService.Application.Tokens.Login;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Tests;
